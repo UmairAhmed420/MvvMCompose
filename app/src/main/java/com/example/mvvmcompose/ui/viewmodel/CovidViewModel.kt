@@ -1,0 +1,70 @@
+package com.example.mvvmcompose.ui.viewmodel
+
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mvvmcompose.data.repository.CovidRepository
+import com.example.mvvmcompose.ui.covid_details.model.CountryStatsResponse
+import kotlinx.coroutines.launch
+
+class CovidViewModel
+constructor(
+    private val covidRepository: CovidRepository
+) : ViewModel() {
+    val countriesListState:
+            MutableState<MutableList<String>> = mutableStateOf(mutableListOf())
+    val countryStatsState:
+            MutableState<MutableList<CountryStatsResponse>> = mutableStateOf(mutableListOf())
+    val searchQuery = mutableStateOf("")
+
+    init {
+        getCountriesList()
+    }
+
+    fun getCountriesList() {
+        viewModelScope.launch {
+            try {
+                val data = covidRepository.getCountries()
+                data.response?.let {
+                    countriesListState.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("ApiError", e.localizedMessage)
+            }
+        }
+    }
+
+    fun onSearchQueryChange(newValue: String) {
+        searchQuery.value = newValue
+    }
+
+    fun searchCountry(searchValue: String) {
+        viewModelScope.launch {
+            try {
+                val data = covidRepository.searchCountry(searchValue)
+                data.response?.let {
+                    countriesListState.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("ApiError", e.localizedMessage)
+            }
+
+
+        }
+    }
+
+    fun getCountryStats(countryName: String) {
+        viewModelScope.launch {
+            try {
+                val data = covidRepository.countryStats(countryName)
+                data.response?.let {
+                    countryStatsState.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("ApiError", e.localizedMessage)
+            }
+        }
+    }
+}
