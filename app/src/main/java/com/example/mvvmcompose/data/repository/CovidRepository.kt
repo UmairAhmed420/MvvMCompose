@@ -8,6 +8,6 @@ class CovidRepository(private val covidApi: CovidApi) {
 
     suspend fun searchCountry(query: String) = covidApi.searchCountry(query)
 
-    suspend fun countryStats(countryName: String) =
+    suspend fun countryStats(countryName: String?) =
         covidApi.countryStatistics(countryName = countryName)
 }

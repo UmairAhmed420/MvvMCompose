@@ -1,6 +1,6 @@
 package com.example.mvvmcompose.ui.covid_country_list
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,21 +14,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mvvmcompose.MainActions
 import com.example.mvvmcompose.ui.covid_country_list.components.CountryCardViewHolder
-import com.example.mvvmcompose.ui.utils.BottomNavigationUtils
+import com.example.mvvmcompose.ui.utils.NavigationUtils
 import com.example.mvvmcompose.ui.viewmodel.CovidViewModel
 
 @Composable
 @ExperimentalComposeUiApi
-fun CountryScreen(navController: NavController, covidViewModel: CovidViewModel) {
+fun CountryScreen(navigateToCountryStats:(String)->Unit, covidViewModel: CovidViewModel) {
 
     val searchQuery = covidViewModel.searchQuery.value
     val countryList = covidViewModel.countriesListState.value
@@ -55,8 +54,9 @@ fun CountryScreen(navController: NavController, covidViewModel: CovidViewModel) 
                 itemsIndexed(items = countryList)
                 { index, item ->
                     CountryCardViewHolder(country = item, onClick = {
-                        navController
-                            .navigate("${BottomNavigationUtils.CountryDetail.route}/$item")
+
+                        Log.d("NavigationFromCountry", "Yes")
+                        navigateToCountryStats(item)
                     })
 
                 }

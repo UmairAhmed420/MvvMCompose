@@ -9,6 +9,7 @@ import com.example.mvvmcompose.data.repository.CovidRepository
 import com.example.mvvmcompose.ui.covid_details.model.CountryStatsResponse
 import kotlinx.coroutines.launch
 
+
 class CovidViewModel
 constructor(
     private val covidRepository: CovidRepository
@@ -16,8 +17,9 @@ constructor(
     val countriesListState:
             MutableState<MutableList<String>> = mutableStateOf(mutableListOf())
     val countryStatsState:
-            MutableState<MutableList<CountryStatsResponse>> = mutableStateOf(mutableListOf())
+            MutableState<CountryStatsResponse> = mutableStateOf(CountryStatsResponse())
     val searchQuery = mutableStateOf("")
+    val loading = mutableStateOf(true)
 
     init {
         getCountriesList()
@@ -55,16 +57,22 @@ constructor(
         }
     }
 
-    fun getCountryStats(countryName: String) {
+
+    fun getCovidCountryStats(countryName: String?) {
+        loading.value = true
         viewModelScope.launch {
             try {
                 val data = covidRepository.countryStats(countryName)
-                data.response?.let {
+
+                data.response?.get(0)?.let {
                     countryStatsState.value = it
                 }
+                loading.value = false
             } catch (e: Exception) {
+                loading.value = false
                 Log.e("ApiError", e.localizedMessage)
             }
         }
     }
 }
+

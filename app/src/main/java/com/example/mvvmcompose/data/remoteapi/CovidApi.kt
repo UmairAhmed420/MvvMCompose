@@ -17,5 +17,5 @@ interface CovidApi {
 
 
     @GET("$STATISTICS")
-    suspend fun countryStatistics(@Query(ApiConstants.PARAMS.COUNTRY_NAME) countryName: String): BaseResponse<MutableList<CountryStatsResponse>>
+    suspend fun countryStatistics(@Query(ApiConstants.PARAMS.COUNTRY_NAME) countryName: String?): BaseResponse<MutableList<CountryStatsResponse>>
 }
